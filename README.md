@@ -2,7 +2,7 @@
 
 A playable, unofficial vertical slice: record a diversion, steal a police archive, escape the patrol, and bank the haul. Based on the supplied Blackline GDD. All cars, buildings, sounds, and graphics are original procedural placeholders.
 
-## A click Link : https://ethanvandyk.github.io/blackline-prototype/
+## A quick Link : https://ethanvandyk.github.io/blackline-prototype/
 
 ## Run on PC
 
