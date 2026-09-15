@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Blackline: a playable offline street-racing and Runback heist prototype.">
+  <title>BLACKLINE — Iron Quay</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a141b'/%3E%3Cpath d='M7 8h16l-4 6h-8zm-2 10h16l-4 6H5z' fill='%23ffae57'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="world" aria-label="3D driving view of Iron Quay" tabindex="0"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div id="hud" class="hidden">
+    <header class="topbar">
+      <div class="brand"><span class="brandmark">//</span> BLACKLINE<small>PORT CALDER · IRON QUAY</small></div>
+      <div class="operation"><span class="eyebrow">DEAD FREIGHT / <span id="phaseLabel">REHEARSAL</span></span><strong id="objective">Record the diversion</strong><span id="objectiveHint">Follow the amber gates.</span><div class="objectiveTrack"><i id="objectiveFill"></i></div></div>
+      <div class="money"><span>BANK <b id="bank">$0</b></span><span>AT RISK <b id="haul">$0</b></span><div class="multiplier" id="multiplier">EXTRACTION ×1.00</div></div>
+    </header>
+    <div class="stageTrack"><span id="stepRecord">01 REHEARSE</span><i></i><span id="stepTake">02 TAKE THE ARCHIVE</span><i></i><span id="stepExit">03 EXTRACT</span></div>
+    <div id="pursuit" class="pursuit hidden"><div class="heatTitle"><span id="heatText">HEAT 1</span><span class="heatBars"><i id="heat1"></i><i id="heat2"></i></span><b id="copStatus">PATROL ALERT</b></div><div class="pursuitTrack"><i id="searchFill"></i></div><div id="bustWarning" class="hidden">CONTAINED · MOVE TO AVOID ARREST<div><i id="bustFill"></i></div></div></div>
+    <div id="countdown" class="countdown hidden">3</div>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <aside class="mapPanel"><div class="mapTitle"><span>IRON QUAY</span><b>N ↑</b></div><canvas id="minimap" width="440" height="380" aria-label="North-up district minimap with objectives and cars"></canvas><div class="mapLegend"><span class="you">YOU</span><span class="eli">ELI</span><span class="police">SARU</span><span class="goal">OBJECTIVE</span></div></aside>
+    <div class="drivePanel"><div class="driveState"><span id="driveState">GRIP</span><b id="gear">N</b></div><div class="speed"><span id="speed">000</span><small>KM/H</small></div><div class="nitroLabel"><span>NITROUS</span><b id="nitroValue">72%</b></div><div class="nitroTrack"><i id="nitroFill"></i></div><div id="nitroHint">HOLD SHIFT TO BOOST</div></div>
+    <div class="bottomControls"><span><kbd>WASD</kbd> DRIVE</span><span><kbd>SPACE</kbd> DRIFT</span><span><kbd>SHIFT</kbd> NITRO</span><span><kbd>C</kbd> CAMERA</span><span><kbd>ESC</kbd> PAUSE</span></div>
+    <div class="utility"><button id="muteButton" aria-label="Mute audio">AUDIO ON</button><button id="pauseButton" aria-label="Pause game">PAUSE</button></div>
+    <div id="radio" class="radio" aria-live="polite">ELI / Radio check.</div>
+  </div>
+  <section id="intro" class="screen intro">
+    <div class="introBody"><div class="eyebrow"><span class="liveDot"></span> PLAYABLE PC PROTOTYPE / 01</div><p class="franchise">NEED FOR SPEED</p><h1>BLACK<span>LINE</span></h1><p class="location">IRON QUAY <span>23:47</span></p><p class="lede">Drive the plan.<br>Then get away with it.</p><p class="introDescription">Record a diversion lap. Let Eli repeat your line while you take the archive. Break police sightlines and bring the haul home.</p><ol class="brief"><li><b>01</b><span>REHEARSE<strong>Follow five amber gates.</strong></span></li><li><b>02</b><span>RUN IT BACK<strong>Take the orange archive.</strong></span></li><li><b>03</b><span>DISAPPEAR<strong>Get clear. Bank at green.</strong></span></li></ol><button id="startButton" class="primary">START REHEARSAL <span>↗</span></button><p class="introControls"><kbd>WASD / ARROWS</kbd> Drive &nbsp; <kbd>SPACE</kbd> Drift &nbsp; <kbd>SHIFT</kbd> Nitro</p><p class="fine">One district · one coupe · one heist · fully offline<br>Unofficial concept prototype. Original placeholder vehicles and environments.</p></div>
+    <div class="introStamp"><span>LOW FIDELITY.<br>HIGH STAKES.</span><i>PORT CALDER // DOCK ACCESS 07</i></div>
+  </section>
+  <section id="readyScreen" class="screen hidden"><div class="modal"><div class="eyebrow">DIVERSION CAPTURED</div><h2>Your line.<br>Eli’s getaway.</h2><p id="recordSummary"></p><div class="instructions"><p><b>ORANGE / ARCHIVE</b> Slow below 36 km/h inside the marker to collect $5,000.</p><p><b>BREAK SIGHTLINES</b> Warehouses block the patrol’s view. Stay unseen for 5.5 seconds. Use nitrous on the long straights.</p><p><b>GREEN / EXTRACTION</b> Arrive with Heat cleared and slow below 29 km/h to bank the haul.</p></div><button id="liveButton" class="primary">LAUNCH LIVE HEIST <span>↗</span></button><button id="recordAgainButton" class="secondary">RE-RECORD THE LAP</button><p class="fine">Eli follows your actual recording. You take the shortcut inland.</p></div></section>
+  <section id="pauseScreen" class="screen hidden"><div class="modal"><div class="eyebrow">ENGINE IDLING</div><h2>Take a breath.</h2><p>Your mission is paused. Returning to the tab does not restart the clock.</p><button id="resumeButton" class="primary">RESUME <span>↗</span></button><button id="retryButton" class="secondary">RETRY THIS ATTEMPT</button><button id="newRecordingButton" class="secondary">START A NEW RECORDING</button><p class="fine">Retrying forfeits this attempt’s unbanked haul. Your bank stays safe.</p><div class="controlGrid"><span>Accelerate / brake / reverse</span><kbd>W / S or ↑ / ↓</kbd><span>Steer</span><kbd>A / D or ← / →</kbd><span>Handbrake / nitrous</span><kbd>SPACE / SHIFT</kbd><span>Chase or tactical camera</span><kbd>C</kbd><span>Mute / restart attempt</span><kbd>M / R</kbd></div></div></section>
+  <section id="resultScreen" class="screen hidden"><div class="modal"><div id="resultKicker" class="eyebrow">JOB COMPLETE</div><h2 id="resultTitle">Clean getaway.</h2><p id="resultDescription"></p><div class="resultMoney" id="resultMoney">+$6,000</div><div class="resultStats" id="resultStats"></div><button id="againButton" class="primary">RUN THE HEIST AGAIN <span>↗</span></button><button id="newLapButton" class="secondary">RECORD A NEW DIVERSION</button><p class="fine">Banked cash saves in this browser when local storage is available.</p></div></section>
+  <section id="errorScreen" class="screen hidden"><div class="modal"><div class="eyebrow">GRAPHICS INTERRUPTED</div><h2>Couldn’t start the engine.</h2><p id="errorMessage"></p><p>Open the extracted <b>index.html</b> in Chrome or Edge with hardware acceleration enabled. Keep the vendor folder beside the game.</p><button class="primary" onclick="location.reload()">TRY AGAIN</button></div></section>
+  <noscript><div class="noScript">JavaScript is required to play Blackline.</div></noscript>
+  <script src="vendor/three.min.js"></script>
+  <script src="core.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
